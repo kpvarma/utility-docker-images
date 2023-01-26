@@ -1,0 +1,28 @@
+version: '3.9'
+services:
+  ruby_utility:
+    build: ./ruby/image
+    image: ruby_utility:latest
+    container_name: ruby_utility
+    command: ["/bin/bash"]
+    tty: true
+    stdin_open: true
+    restart: always
+    env_file:
+      - ./ruby/image/ruby.env
+    volumes:
+      - ./ruby:/app
+  node_utility:
+    build: ./node/image
+    image: node_utility:latest
+    container_name: node_utility
+    tty: true
+    stdin_open: true
+    restart: always
+    env_file:
+      - ./node/image/node.env
+    volumes:
+      - ./node/new_app:/app
+volumes:
+  ruby_app:
+  node_app:
