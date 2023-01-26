@@ -1,1 +1,13 @@
 *.DS_Store
+
+node/new_app/*
+node/new_api/*
+
+ruby/new_app/*
+ruby/new_api/*
+
+python/new_app/*
+python/new_api/*
+
+go/new_api/*
+
