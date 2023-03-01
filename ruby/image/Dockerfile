@@ -4,7 +4,7 @@ FROM ruby
 RUN apt-get update && apt-get install -y build-essential && apt-get clean
 
 # Create a directory for the application
-RUN mkdir /app
+# RUN mkdir /app
 WORKDIR /app
 
 # Install required gems
@@ -15,4 +15,4 @@ RUN gem install rails-api
 ENTRYPOINT ["rails"]
 
 # Expose a port
-EXPOSE 8001
+# EXPOSE 8001
