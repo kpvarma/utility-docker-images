@@ -9,10 +9,14 @@ WORKDIR /app
 
 # Install required gems
 RUN gem install bundler
-RUN gem install rails
-RUN gem install rails-api
 
-ENTRYPOINT ["rails"]
+# Install Rails API
+RUN gem install rails-api
+ENTRYPOINT ["rails-api"]
+
+# Install Rails
+# RUN gem install rails
+# ENTRYPOINT ["rails"]
 
 # Expose a port
 # EXPOSE 8001
