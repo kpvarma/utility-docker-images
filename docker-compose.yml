@@ -1,28 +1,103 @@
-version: '3.9'
 services:
-  ruby_utility:
-    build: ./ruby/image
-    image: ruby_utility:latest
-    container_name: ruby_utility
-    command: ["/bin/bash"]
-    tty: true
-    stdin_open: true
-    restart: always
-    env_file:
-      - ./ruby/image/ruby.env
+  ruby-base:
+    build:
+      context: ./base/ruby
+      dockerfile: Dockerfile
+    image: ruby-base:latest
+    container_name: ruby-base
+    command: ["ruby"]
     volumes:
-      - ./ruby:/app
-  node_utility:
-    build: ./node/image
-    image: node_utility:latest
-    container_name: node_utility
-    tty: true
-    stdin_open: true
-    restart: always
+      - ${PROJECT_DIR:-./shared}:/app
     env_file:
-      - ./node/image/node.env
+      - ./base/ruby/ruby.env
+    tty: true
+  
+  ruby-rails:
+    build:
+      context: ./specialized/ruby/rails
+      dockerfile: Dockerfile
+    image: ruby-rails:latest
+    container_name: ruby-rails
+    ports:
+      - "8000:8000"
     volumes:
-      - ./node/new_app:/app
-volumes:
-  ruby_app:
-  node_app:
+      - ${PROJECT_DIR:-./shared}:/app
+    depends_on:
+      - ruby-base
+    env_file:
+      - ./specialized/ruby/rails/rails.env
+    command: ["rails-admin"]
+
+  python-base:
+    build:
+      context: ./base/python
+      dockerfile: Dockerfile
+    image: python-base:latest
+    container_name: python-base
+    command: ["python"]
+    volumes:
+      - ${PROJECT_DIR:-./shared}:/app
+    env_file:
+      - ./base/python/python.env
+    tty: true
+
+  python-django:
+    build:
+      context: ./specialized/python/django
+      dockerfile: Dockerfile
+    image: python-django:latest
+    container_name: python-django
+    ports:
+      - "8000:8000"
+    volumes:
+      - ${PROJECT_DIR:-./shared}:/app
+    depends_on:
+      - python-base
+    env_file:
+      - ./specialized/python/django/django.env
+    command: ["django-admin"]
+
+  python-flask:
+    build:
+      context: ./specialized/python/flask
+      dockerfile: Dockerfile
+    image: python-flask:latest
+    container_name: python-flask
+    ports:
+      - "5000:5000"
+    volumes:
+      - ${PROJECT_DIR:-./shared}:/app
+    depends_on:
+      - python-base
+    env_file:
+      - ./specialized/python/flask/flask.env
+    command: ["flask", "run", "--host=0.0.0.0"]
+
+  python-fastapi:
+    build:
+      context: ./specialized/python/fastapi
+      dockerfile: Dockerfile
+    image: python-fastapi:latest
+    container_name: python-fastapi
+    ports:
+      - "8001:8000"
+    volumes:
+      - ${PROJECT_DIR:-./shared}:/app
+    depends_on:
+      - python-base
+    env_file:
+      - ./specialized/python/fastapi/fastapi.env
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+  node-base:
+    build:
+      context: ./base/node
+      dockerfile: Dockerfile
+    image: node-base:latest
+    container_name: node-base
+    command: ["node"]
+    volumes:
+      - ${PROJECT_DIR:-./shared}:/app
+    env_file:
+      - ./base/node/node.env
+    tty: true

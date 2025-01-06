@@ -1,4 +1,9 @@
 *.DS_Store
 
-new_app
-new_api
+unsorted/*
+archives/*
+projects/*
+shared/*
+
+
+

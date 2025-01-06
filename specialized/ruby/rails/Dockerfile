@@ -1,4 +1,4 @@
-FROM ruby
+FROM ruby:3.2.2
 
 # Update and install required dependencies
 RUN apt-get update && apt-get install -y build-essential && apt-get clean
@@ -10,13 +10,9 @@ WORKDIR /app
 # Install required gems
 RUN gem install bundler
 
-# Install Rails API
-RUN gem install rails-api
-ENTRYPOINT ["rails-api"]
-
 # Install Rails
-# RUN gem install rails
-# ENTRYPOINT ["rails"]
+RUN gem install rails -v 8.0.1
+ENTRYPOINT ["rails"] 
 
 # Expose a port
 # EXPOSE 8001
