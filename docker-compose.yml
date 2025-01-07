@@ -19,9 +19,9 @@ services:
     image: ruby-rails:latest
     container_name: ruby-rails
     ports:
-      - "8000:8000"
+      - "8000:3000"
     volumes:
-      - ${PROJECT_DIR:-./shared}:/app
+      - ${APP_DIR:-./shared}:/app
     depends_on:
       - ruby-base
     env_file:

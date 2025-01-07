@@ -1,61 +1,103 @@
 
-# Ruby Base Image
+# Ruby Base Docker Image
 
 This is a base Docker image for Ruby projects, built on top of the official `ruby:3.2.2-slim` image. It includes essential tools and configurations for Ruby development.
 
 ## Features
-- Lightweight Ruby environment with Bundler pre-installed.
-- Based on `ruby:3.2.2-slim` for a lightweight setup.
-- Pre-installed essential system dependencies (`build-essential`, `libssl-dev`, etc.).
-- Ready-to-use `irb` for interactive Ruby sessions.
-- Ideal for development, testing, and automation workflows.
+- Lightweight Ruby environment based on `ruby:3.2.2-slim`.
+- Pre-installed essential system dependencies (`build-essential`, `curl`, `git`, etc.).
+- Bundler pre-installed globally for managing Ruby gems.
+- Ideal for developing, testing, and prototyping Ruby applications in a clean and isolated environment.
 
-## Usage with Docker Compose
+## Build the ruby-base Image
 
-### 1. General Ruby Development
-Run an interactive Ruby shell using the `ruby-base` service in the `docker-compose.yml`:
+To build the Ruby base image, run:
 ```bash
-docker-compose up ruby-base --build
+docker-compose build ruby-base
 ```
+
+## Practical Use Cases
+
+### Start an interactive session with IRB:
+
+Start an interactive session in the container to experiment with Ruby code or test new gems
+```bash
+docker-compose run ruby-base irb
+```
+
+1. Install a gem temporarily:
+   ```ruby
+   require 'date'
+   puts Date.today
+   ```
+
+2. Write and test a quick Ruby script:
+   ```ruby
+   File.write("hello.rb", 'puts "Hello, Ruby!"')
+   system("ruby hello.rb")
+   ```
+
+3. Test and Debug Ruby Code Snippets:
+   Quickly evaluate Ruby expressions or test simple snippets.
+   ```ruby
+   puts "Hello, Ruby!"
+   2 + 3
+   [1, 2, 3].map { |n| n * 2 }
+   ```
+
+4. Explore Ruby Gems:
+   Experiment with Ruby gems before adding them to your project.
+   ```ruby
+   require 'securerandom'
+   puts SecureRandom.hex(10)
+
+   require 'json'
+   puts JSON.generate({ name: "Ruby", version: "3.2.2" })
+   ```
+
+5. Prototype Small Ideas:
+   Validate Ruby methods or blocks before integrating them into your app.
+   ```ruby
+   def greet(name)
+     "Hello, #{name}!"
+   end
+   puts greet("World")
+   ```
+
+---
 
 ### 2. Running Ruby Scripts
-Run a Ruby script in an isolated environment:
+
+To execute Ruby scripts stored on your local machine, mount the directory containing the script and specify the file to run:
 ```bash
-docker-compose run ruby-base ruby your_script.rb
+# Example: Running a script located in the `scripts` folder.
+docker-compose run -v "$(pwd):/app" ruby-base ruby /app/scripts/my_script.rb
 ```
 
-### 3. Installing Gems
-Install specific gems or dependencies within the container:
-```bash
-docker-compose run ruby-base gem install sinatra
-```
+---
 
-### 4. Use in CI/CD Pipelines
-Integrate the image into CI/CD workflows to automate Ruby testing. Example GitHub Actions snippet:
-```yaml
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    services:
-      ruby-base:
-        image: ruby-base:latest
-    steps:
-    - run: bundle exec rspec
-```
+### 3. Creating a New Ruby Project
+Use this image to scaffold a new Ruby project or work on an existing one:
+1. **Initialize a New Ruby Project**:
+   ```bash
+   docker-compose run -v "$(pwd):/app" ruby-base bundle init
+   ```
 
-### 5. Prototyping
-Quickly prototype Ruby scripts or projects in the container:
-```bash
-docker-compose run ruby-base bash
-```
+2. **Install Dependencies**:
+   Add dependencies to the `Gemfile`, then install them:
+   ```bash
+   docker-compose run -v "$(pwd):/app" ruby-base bundle install
+   ```
 
-### 6. Base for Specialized Ruby Images
-Extend the base image for specific frameworks like Rails using `docker-compose` to spin up specialized services.
+3. **Run the Application**:
+   ```bash
+   docker-compose run -v "$(pwd):/app" ruby-base ruby your_app.rb
+   ```
 
-Example for Rails (`ruby-rails` service):
-```bash
-docker-compose up ruby-rails --build
-```
+---
 
-## Shared Volume
-The `shared/` directory can be used as a mounted volume at `/app` to store and access project files across services.
+### Conclusion
+This Ruby base image provides a clean, isolated, and versatile environment for Ruby development. Whether you're prototyping, building a new project, or running tests, this image simplifies your workflow and keeps your host system clean.
+
+### Shared Volume
+By default, you can use the `shared/` directory as a mounted volume to store and access project files across services.

@@ -1,0 +1,44 @@
+# Use the official Ruby image
+FROM ruby:3.2.2
+
+# Metadata
+LABEL maintainer="your_email@example.com"
+LABEL description="A Docker image for Rails 8 development."
+
+# Install dependencies
+RUN apt-get update -qq && apt-get install -y \
+  build-essential \
+  nodejs \
+  yarn \
+  libpq-dev \
+  sqlite3 \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
+# Install Bundler and Rails
+RUN gem install bundler && gem install rails -v 8.0.1
+
+# Set working directory
+WORKDIR /app
+
+# Copy application Gemfile and Gemfile.lock
+COPY Gemfile Gemfile.lock ./
+
+# Install application dependencies
+RUN bundle install
+
+# Copy application source code
+COPY . .
+
+# Precompile assets (optional for production builds)
+# RUN bundle exec rake assets:precompile
+
+# Set Rails to bind to all network interfaces
+ENV RAILS_ENV=development
+ENV RACK_ENV=development
+
+# Expose default Rails port
+EXPOSE 3000
+
+# Default command
+CMD ["rails", "server", "-b", "0.0.0.0"]
