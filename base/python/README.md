@@ -15,13 +15,13 @@ This is a base Docker image for Python projects, built on top of the official `p
 ### 1. General Python Development
 Run a Python script using the `python-base` service in the `docker-compose.yml`:
 ```bash
-docker-compose up python-base --build
+docker compose up python-base --build
 ```
 
 ### 2. Testing Python Utilities
 Test libraries or dependencies in an isolated environment:
 ```bash
-docker-compose run python-base python -m pip install some-library
+docker compose run --rm python-base python -m pip install some-library
 ```
 
 ### 3. Use in CI/CD Pipelines
@@ -40,40 +40,40 @@ jobs:
 ### 4. Education and Tutorials
 Use the container as a pre-configured environment for teaching Python:
 ```bash
-docker-compose up python-base --build
+docker compose up python-base --build
 ```
 
 ### 5. Prototyping
 Quickly prototype Python scripts by running an interactive shell:
 ```bash
-docker-compose run python-base bash
+docker compose run --rm python-base bash
 ```
 
 ### 6. Running Python-Based Tools
 Run Python-based CLI tools like `black` or `pytest`:
 ```bash
-docker-compose run python-base python -m pip install black
-docker-compose run python-base black your_script.py
+docker compose run --rm python-base python -m pip install black
+docker compose run --rm python-base black your_script.py
 ```
 
 ### 7. Base for Specialized Python Images
-Extend the base image for specific frameworks like Flask or Django using `docker-compose` to spin up specialized services.
+Extend the base image for specific frameworks like Flask or Django using `docker compose` to spin up specialized services.
 
 Example for Flask (`python-flask` service):
 ```bash
-docker-compose up python-flask --build
+docker compose up python-flask --build
 ```
 
 ### 8. Isolated Environment for Dependency Management
 Test specific library versions without polluting the host environment:
 ```bash
-docker-compose run python-base pip install "requests==2.25.1"
+docker compose run --rm python-base pip install "requests==2.25.1"
 ```
 
 ### 9. Cross-Platform Consistency
 Ensure consistent behavior of Python scripts across different operating systems by testing in the container:
 ```bash
-docker-compose run python-base python script.py
+docker compose run --rm python-base python script.py
 ```
 
 ## Shared Volume

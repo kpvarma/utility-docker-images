@@ -21,7 +21,7 @@ services:
     ports:
       - "8000:3000"
     volumes:
-      - ${APP_DIR:-./shared}:/app
+      - ${PROJECT_DIR:-./shared}:/app
     depends_on:
       - ruby-base
     env_file:
@@ -92,7 +92,7 @@ services:
   node-base:
     build:
       context: ./base/node
-      dockerfile: Dockerfile
+      dockerfile: node-23.dockerfile
     image: node-base:latest
     container_name: node-base
     command: ["node"]

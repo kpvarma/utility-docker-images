@@ -1,0 +1,15 @@
+services:
+  rn-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile  # Adjust if your Dockerfile is named differently or in another folder
+    container_name: rn-dev-env
+    ports:
+      - "8081:8081"  # Expose Metro Bundler port
+    volumes:
+      - .:/app      # Mount your current directory to /app in the container
+    environment:
+      - JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+      - ANDROID_SDK_ROOT=/opt/android-sdk
+    tty: true
+    stdin_open: true

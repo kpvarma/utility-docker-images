@@ -1,0 +1,44 @@
+# Use an official Node.js image based on Debian (buster)
+FROM node:23-bullseye
+
+# Install required packages and Java (for Android builds)
+RUN apt-get update && apt-get install -y \
+    openjdk-11-jdk \
+    wget \
+    unzip \
+    git \
+    bash \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set JAVA_HOME environment variable (adjust if needed)
+RUN ls -la /usr/bin/java
+
+ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-arm64
+
+# Define Android SDK root and add necessary tools to PATH
+ENV ANDROID_SDK_ROOT=/opt/android-sdk
+ENV PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools
+
+# Install Android SDK command-line tools
+RUN mkdir -p $ANDROID_SDK_ROOT/cmdline-tools && \
+    cd $ANDROID_SDK_ROOT/cmdline-tools && \
+    wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O commandlinetools.zip && \
+    unzip commandlinetools.zip && \
+    rm commandlinetools.zip && \
+    mv cmdline-tools $ANDROID_SDK_ROOT/cmdline-tools/latest
+
+# Accept Android SDK licenses and install essential packages
+RUN yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses && \
+    $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+
+# Optionally install Watchman (useful for React Native file watching)
+RUN apt-get update && apt-get install -y watchman && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Expose Metro Bundler's default port
+EXPOSE 8081
+
+# Start a bash shell by default
+CMD ["bash"]
